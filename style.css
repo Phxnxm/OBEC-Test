@@ -1,0 +1,278 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Sarabun', sans-serif;
+    background-color: #f3f4f6;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 30px;
+    text-align: center;
+}
+
+h1 { color: #1e3a8a; margin-bottom: 10px; font-size: 26px; }
+h2 { color: #2b6cb0; margin-bottom: 15px; font-size: 22px; }
+p { margin-bottom: 20px; color: #4b5563; }
+
+/* ซ่อนและแสดงหน้าจอ */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ปุ่มเมนูหลัก */
+.menu-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.main-menu-btn {
+    background-color: #3182ce;
+    color: white;
+    border: 2px solid #3182ce;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.main-menu-btn:hover { background-color: #2b6cb0; }
+.main-menu-btn.outline {
+    background-color: white;
+    color: #3182ce;
+}
+.main-menu-btn.outline:hover { background-color: #ebf8ff; }
+
+/* ปุ่มเลือกวิชา */
+.subject-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.subject-btn {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+    border: 1px solid #bee3f8;
+    padding: 15px 10px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.subject-btn:hover { background-color: #3182ce; color: white; }
+.computer-btn { background-color: #e9d8fd; color: #553c9a; border-color: #d6bcfa; }
+.computer-btn:hover { background-color: #6b46c1; color: white; }
+
+/* กล่องเนื้อหาทั่วไป และข้อสอบ */
+.content-box, .question-box {
+    background-color: #f7fafc;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 5px solid #3182ce;
+    margin-bottom: 20px;
+    font-size: 16px;
+    text-align: left;
+    line-height: 1.6;
+}
+.question-box { font-size: 18px; font-weight: 500; }
+
+/* ตัวเลือกข้อสอบ */
+.options-container { display: flex; flex-direction: column; gap: 10px; }
+.option-btn {
+    background-color: white;
+    border: 1px solid #cbd5e0;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 16px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.option-btn:hover { background-color: #edf2f7; border-color: #a0aec0; }
+
+/* ปุ่มเสริม */
+.btn-primary {
+    background-color: #3182ce; color: white; border: none;
+    padding: 12px 25px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 20px;
+}
+.btn-secondary {
+    background-color: #e2e8f0; color: #4a5568; border: none;
+    padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;
+}
+.btn-secondary:hover { background-color: #cbd5e0; }
+
+.highlight-score { font-size: 40px; font-weight: bold; color: #e53e3e; display: block; margin: 15px 0; }
+.progress-text { font-size: 14px; color: #718096; margin-bottom: 10px; text-align: right; }
+
+/* หน้าต่างโหลดข้อมูล */
+.loading-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #f3f4f6;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.loading-overlay.active {
+    display: flex;
+}
+.loading-overlay h2 {
+    color: #2b6cb0;
+    animation: blink 1s infinite alternate;
+}
+@keyframes blink {
+    from { opacity: 1; }
+    to { opacity: 0.5; }
+}
+
+/* ส่วนจับเวลาและปุ่มส่งคำตอบ */
+.timer-container {
+    text-align: center;
+    margin: 20px 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.timer-text {
+    font-size: 40px;
+    font-weight: bold;
+    color: #4a5568;
+    margin-bottom: 15px;
+    font-family: monospace; /* ทำให้ตัวเลขกว้างเท่ากัน */
+}
+
+.btn-submit {
+    background-color: #76b967; /* สีเขียวตามแบบ */
+    color: white;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 50px;
+    font-size: 20px;
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-submit:hover {
+    background-color: #5ea050;
+    transform: translateY(-2px);
+}
+/* -------------------------------------- */
+/* ส่วนเสริมใหม่: แผงควบคุม และ ดูเฉลย */
+/* -------------------------------------- */
+
+/* แผงควบคุมข้อสอบ (Question Navigator) */
+.question-navigator {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 25px;
+    justify-content: center;
+    background-color: #f7fafc;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.nav-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e0;
+    background-color: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: 'Sarabun', sans-serif;
+    font-weight: bold;
+    color: #4a5568;
+    transition: 0.2s;
+}
+
+.nav-btn:hover {
+    background-color: #edf2f7;
+}
+
+/* เมื่อข้อนั้นตอบแล้ว ให้เปลี่ยนเป็นสีฟ้าอ่อน */
+.nav-btn.answered {
+    background-color: #bee3f8;
+    border-color: #3182ce;
+    color: #2b6cb0;
+}
+
+/* ข้อที่กำลังเปิดอยู่ ให้เปลี่ยนเป็นสีน้ำเงินเข้ม */
+.nav-btn.active {
+    background-color: #3182ce;
+    color: white;
+    border-color: #2b6cb0;
+    transform: scale(1.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* สำหรับหน้าดูเฉลย */
+.review-correct {
+    color: #2f855a;
+    font-weight: bold;
+    background-color: #f0fff4;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.review-wrong {
+    color: #c53030;
+    text-decoration: line-through;
+}
+/* ช่องกรอกอีเมล */
+.email-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    font-family: 'Sarabun', sans-serif;
+    border: 2px solid #cbd5e0;
+    border-radius: 8px;
+    margin-top: 10px;
+    outline: none;
+    transition: 0.2s;
+}
+.email-input:focus {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+}
+
+/* ป้องกันการทุจริต: ห้ามคลุมดำก๊อปปี้ข้อความ */
+.unselectable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

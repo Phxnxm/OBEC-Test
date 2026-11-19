@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจำลองสอบ และ แนวข้อสอบ สพฐ.</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+    <div id="loading-screen" class="loading-overlay active">
+        <h2>⏳ กำลังโหลดข้อมูลระบบ...</h2>
+    </div>
+
+    <div class="container">
+        
+        <!-- หน้าต่างกรอกข้อมูลผู้สอบ (แสดงเป็นหน้าแรกสุด) -->
+        <div id="user-info-screen" class="screen">
+            <h2>👤 ยินดีต้อนรับเข้าสู่ระบบ</h2>
+            <p>กรุณากรอก Email ของคุณเพื่อบันทึกผลการทดสอบ</p>
+            <input type="email" id="user-email-input" placeholder="ตัวอย่าง: student@gmail.com" class="email-input" required>
+            
+            <div style="margin-top: 20px;">
+                <button class="btn-primary" onclick="confirmUserInfo()" style="width: 100%; margin-top: 0;">เข้าสู่ระบบ 🚀</button>
+            </div>
+        </div>
+
+        <!-- เมนูหลัก -->
+        <div id="main-menu-screen" class="screen">
+            <h1>📚 ระบบเตรียมสอบ สพฐ.</h1>
+            <p>กรุณาเลือกเมนูที่คุณต้องการใช้งาน</p>
+            <div class="menu-grid">
+                <button class="main-menu-btn" onclick="selectMode('quiz')">📝 เริ่มทำแบบทดสอบ</button>
+                <button class="main-menu-btn outline" onclick="selectMode('guideline')">📖 ดูแนวข้อสอบ (เนื้อหา)</button>
+            </div>
+        </div>
+
+        <!-- เลือกวิชา -->
+        <div id="subject-selection-screen" class="screen">
+            <h2 id="selection-title">เลือกวิชา</h2>
+            <div class="subject-grid">
+                <button class="subject-btn" onclick="handleSubjectClick('thai')">ภาษาไทย</button>
+                <button class="subject-btn" onclick="handleSubjectClick('social')">สังคมศึกษา</button>
+                <button class="subject-btn" onclick="handleSubjectClick('english')">ภาษาอังกฤษ</button>
+                <button class="subject-btn" onclick="handleSubjectClick('math1')">คณิตศาสตร์ 1</button>
+                <button class="subject-btn" onclick="handleSubjectClick('physics')">ฟิสิกส์</button>
+                <button class="subject-btn" onclick="handleSubjectClick('chemistry')">เคมี</button>
+                <button class="subject-btn" onclick="handleSubjectClick('biology')">ชีววิทยา</button>
+                <button class="subject-btn" onclick="handleSubjectClick('math2')">คณิตศาสตร์ 2</button>
+                <button class="subject-btn" onclick="handleSubjectClick('science')">วิทยาศาสตร์ทั่วไป</button>
+                <button class="subject-btn" onclick="handleSubjectClick('computer')">คอมพิวเตอร์</button>
+            </div>
+            <button class="btn-secondary" onclick="showMainMenu()">🏠 กลับหน้าหลัก</button>
+        </div>
+
+        <!-- แสดงรายละเอียดแนวข้อสอบ -->
+        <div id="guideline-screen" class="screen">
+            <h2 id="guideline-title">แนวข้อสอบ: ชื่อวิชา</h2>
+            <div class="content-box" id="guideline-text">รายละเอียดเนื้อหาจะแสดงที่นี่</div>
+            <button class="btn-secondary" onclick="selectMode('guideline')">🔙 กลับไปเลือกวิชา</button>
+        </div>
+
+        <!-- ทำข้อสอบ -->
+        <div id="quiz-screen" class="screen unselectable">
+            <h2 id="subject-title">ชุดข้อสอบ : ชื่อวิชา</h2>
+            
+            <div class="timer-container">
+                <div class="timer-text" id="timer-display">🕒 00:00</div>
+                <button class="btn-submit" onclick="confirmSubmit()">ส่งคำตอบ 📩</button>
+            </div>
+
+            <div class="question-navigator" id="question-navigator"></div>
+
+            <div class="progress-text">ข้อที่ <span id="current-q-num">1</span> / <span id="total-q-num">10</span></div>
+            
+            <div class="question-box">
+                <p id="question-text">โจทย์คำถามจะแสดงที่นี่?</p>
+            </div>
+            
+            <div class="options-container" id="options-container"></div>
+            <br>
+            <button class="btn-secondary" onclick="selectMode('quiz')">🔙 ออกจากการสอบ (ไม่บันทึกคะแนน)</button>
+        </div>
+
+        <!-- สรุปผลสอบ -->
+        <div id="result-screen" class="screen">
+            <h2>ผลการทดสอบ</h2>
+            <div class="score-box">
+                คุณทำคะแนนได้ <br>
+                <span id="score-text" class="highlight-score">0 / 0</span>
+            </div>
+            <p id="feedback-text"></p>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn-secondary" onclick="showReview()" style="flex: 1; border: 1px solid #cbd5e0; background-color: white;">🔍 ดูเฉลยข้อที่ผิด</button>
+                <button class="btn-primary" onclick="showMainMenu()" style="flex: 1; margin-top: 0;">🏠 กลับหน้าเมนูหลัก</button>
+            </div>
+        </div>
+
+        <!-- ดูเฉลย -->
+        <div id="review-screen" class="screen">
+            <h2>🔍 ทบทวนคำตอบของคุณ</h2>
+            <div class="content-box" id="review-text" style="background-color: white;"></div>
+            <button class="btn-primary" onclick="showMainMenu()" style="width: 100%;">🏠 กลับหน้าเมนูหลัก</button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
